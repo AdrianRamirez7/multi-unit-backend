@@ -9,3 +9,5 @@ class Users::RegistrationsController < Devise::RegistrationsController
     render json: resource
   end
 end
+
+
