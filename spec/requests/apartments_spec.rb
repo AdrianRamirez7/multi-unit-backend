@@ -1,48 +1,58 @@
 require 'rails_helper'
 
 RSpec.describe "Apartments", type: :request do
-  let(:user) {User.create(
-    email: 'fake@email.com',
-    password: 'password1',
-    password: 'password1',
-    password_confirmation: 'password1'
-  )}
+  let(:user) {
+    User.create(
+      email: 'fake@email.com',
+      password: 'password',
+      password_confirmation: 'password'
+    )
+  }
 
-  #apartment
-  # let(:apartment) { user.apartments.create(
-  #   street: '124 Conch St',
-  #   unit: 'A',
-  #   city: 'Bikini Bottom',
-  #   state: 'CA',
-  #   square_footage: 2000,
-  #   price: '2000',
-  #   bedrooms: 3,
-  #   bathrooms: 2,
-  #   pets: 'yes',
-  #   image: 'https://c8.alamy.com/comp/B0RJGE/small-bungalow-home-with-pathway-in-addlestone-surrey-uk-B0RJGE.jpg'
-  # ) }
   describe "GET /index" do
-    it 'returns all the apartments' do
-      #http request
-        apartment =  user.apartments.create(
-    street: '124 Conch St',
-    unit: 'A',
-    city: 'Bikini Bottom',
-    state: 'CA',
-    square_footage: 2000,
-    price: '2000',
-    bedrooms: 3,
-    bathrooms: 2,
-    pets: 'yes',
-    image: 'https://c8.alamy.com/comp/B0RJGE/small-bungalow-home-with-pathway-in-addlestone-surrey-uk-B0RJGE.jpg'
-  )
+    it 'gets all the apartments' do
+      apartment = user.apartments.create(
+        street: '124 Conch St',
+        unit: 'A',
+        city: 'Bikini Bottom',
+        state: 'CA', 
+        square_footage: 2000,
+        price: '2000',
+        bedrooms: 3,
+        bathrooms: 2,
+        pets: 'yes',
+        image: 'https://c8.alamy.com/comp/B0RJGE/small-bungalow-home-with-pathway-in-addlestone-surrey-uk-B0RJGE.jpg'
+      )
 
       get '/apartments'
 
-      apartment = JSON.parse(response.body)
-      p "apartment: ", apartment
+      apartments = JSON.parse(response.body)
       expect(response).to have_http_status(200)
-      expect(apartment.first['street']).to eq '124 Conch St'
+      expect(apartments.first['street']).to eq('124 Conch St')
     end
   end
+    
+  describe "POST /create" do 
+    it "Saves a valid entry into the database" do
+      apartment_params = {
+        apartment: {
+          street: '124 Conch St',
+          unit: 'A',
+          city: 'Bikini Bottom',
+          state: 'CA',  
+          square_footage: 2000,
+          price: '2000',
+          bedrooms: 3,
+          bathrooms: 2,
+          pets: 'yes',
+          image: 'https://c8.alamy.com/comp/B0RJGE/small-bungalow-home-with-pathway-in-addlestone-surrey-uk-B0RJGE.jpg'
+        }
+      }
+
+      post '/apartments', params: apartment_params
+      apartment = JSON.parse(response.body)
+      expect(apartment['state']).to eq 'CA'
+      expect(response).to have_http_status(200)
+    end
+  end  
 end
